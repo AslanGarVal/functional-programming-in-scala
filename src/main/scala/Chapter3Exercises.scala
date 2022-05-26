@@ -87,4 +87,85 @@ object Chapter3Exercises extends App {
   }
 
   println(init(myList))
+
+
+
+  sealed trait Tree[+A] {
+    /*
+    EXERCISE 3.25:
+    Write a function size that counts the number of nodes (leaves and branches) in a tree.
+   */
+    def size: Int = this match {
+      case Leaf(1) => 1
+      case Branch(left, right) => 1 + left.size + right.size
+    }
+
+    /*
+    EXERCISE 3.27:
+    Write a function depth that returns the maximum path length from the root of a tree
+    to any leaf.
+    */
+
+    def length(): Int = this match {
+      case Leaf(_) => 0
+      case Branch(left, right) => 1 + (left.length max right.length)
+    }
+
+    /*
+    EXERCISE 3.28
+    Write a function map, analogous to the method of the same name on List,
+    that modifies each element in a tree with a given function.
+     */
+
+    def map[B](f: A => B): Tree[B] = this match {
+      case Leaf(value) => Leaf(f(value))
+      case Branch(left, right) => Branch(left.map(f), right.map(f))
+    }
+
+    /*
+    EXERCISE 3.29:
+    Generalize size, maximum, depth, and map, writing a new function fold that abstracts
+    over their similarities. Reimplement them in terms of this more general function. Can
+    you draw an analogy between this fold function and the left and right folds for List?
+     */
+
+    //The key is to implement fold with two function arguments, one for each instance of a Tree:
+    def fold[B](f: A => B, g: (B, B) => B): B = this match {
+      case Leaf(value) => f(value)
+      case Branch(left, right) => g(left.fold(f, g), right.fold(f, g))
+    }
+
+    def sizeWithFold: Int = fold(_ => 1, 1 + _ + _)
+    def lengthWithFold: Int = fold(_ => 0, (x: Int, y: Int) => 1 + (x max y))
+    def mapWithFold[B](f: A => B): Tree[B] = fold(a => Leaf(f(a)), Branch(_, _))
+  }
+  case class Leaf[A](value: A) extends Tree[A]
+  case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+
+
+  val aTree: Tree[Int] = Leaf(1)
+  val anotherTree: Tree[Int] = Branch(Branch(Leaf(2), Leaf(3)), Branch(Leaf(4), Leaf(1)))
+
+  println(aTree.size)
+  println(anotherTree.size)
+
+  /*
+  EXERCISE 3.26:
+  Write a function maximum that returns the maximum element in a Tree[Int]. (Note:
+  In Scala, you can use x.max(y) or x max y to compute the maximum of two integers x
+  and y.)
+   */
+  def max(tree: Tree[Int]): Int = tree match {
+    case Leaf(value) => value
+    case Branch(left, right) => max(left) max max(right)
+  }
+
+  println(max(aTree))
+  println(max(anotherTree))
+
+
+
+
+
+
 }
