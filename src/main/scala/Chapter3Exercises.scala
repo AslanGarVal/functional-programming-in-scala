@@ -135,7 +135,7 @@ object Chapter3Exercises extends App {
       case Branch(left, right) => g(left.fold(f, g), right.fold(f, g))
     }
 
-    def sizeWithFold: Int = fold(_ => 1, 1 + _ + _)
+    def sizeWithFold: Int = fold(_ => 1, (l, r) => 1 + l + r)
     def lengthWithFold: Int = fold(_ => 0, (x: Int, y: Int) => 1 + (x max y))
     def mapWithFold[B](f: A => B): Tree[B] = fold(a => Leaf(f(a)), Branch(_, _))
   }
