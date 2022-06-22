@@ -4,10 +4,11 @@ object Chapter4Exercises extends App {
   EXERCISE 4.1:
   Implement map, flatMap, getOrElse, orElse and filter
    */
+  /*
   sealed trait myOption[+A] {
     //extract value from option, then transform
     def map[B](f: A => B): myOption[B] = this match {
-      case myNone => myNone[B]
+      case myNone => myNone
       case mySome(v) => mySome(f(v))
     }
 
@@ -39,4 +40,7 @@ object Chapter4Exercises extends App {
     else Option(xs.sum / xs.length)
 
   def variance(xs: Seq[Double]): Option[Double] = mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
+}
+
+   */
 }
