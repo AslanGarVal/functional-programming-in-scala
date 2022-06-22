@@ -1,19 +1,21 @@
+import Chapter4Exercises.myOption.none
+
 object Chapter4Exercises extends App {
 
   /*
   EXERCISE 4.1:
   Implement map, flatMap, getOrElse, orElse and filter
    */
-  /*
+
   sealed trait myOption[+A] {
     //extract value from option, then transform
     def map[B](f: A => B): myOption[B] = this match {
-      case myNone => myNone
+      case myNone => none[B]
       case mySome(v) => mySome(f(v))
     }
 
     //extract value from option, transform, then repackage
-    def flatMap[B](f: A => myOption[B]): myOption[B] = map(f).getOrElse(None)
+    def flatMap[B](f: A => myOption[B]): myOption[B] = map(f).getOrElse(none)
 
     //if extraction fails, return a default
     def getOrElse[B >: A](default: => B): B = this match {
@@ -29,6 +31,10 @@ object Chapter4Exercises extends App {
   case object myNone extends myOption[Nothing]
   case class mySome[A](v: A) extends myOption[A]
 
+  //smart constructor to create options
+  object myOption {
+    def none[A]: myOption[A] = myNone
+  }
   /*
   EXERCISE 4.2:
   Implement the variance function in terms of flatMap. If the mean of a sequence is m,
@@ -42,5 +48,3 @@ object Chapter4Exercises extends App {
   def variance(xs: Seq[Double]): Option[Double] = mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
 }
 
-   */
-}
